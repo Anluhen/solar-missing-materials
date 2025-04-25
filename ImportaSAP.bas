@@ -173,6 +173,7 @@ Function AddMateriaisToLista()
     Dim targetName As String
     Dim ordem As String
     Dim found As Boolean
+    Dim cell As Range
     
     ' Name of the workbook to find
     targetName = "export.XLSX"
@@ -228,11 +229,21 @@ Function AddMateriaisToLista()
     ' Clear the clipboard
     Application.CutCopyMode = False
     
-    tbl1.DataBodyRange.Cells(1, 1).Formula = "=VLOOKUP([@Ordem],Tabela2,2,FALSE)"
-    tbl1.DataBodyRange.Cells(1, 2).Formula = "=VLOOKUP([@Ordem],Tabela2,3,FALSE)"
-     
     ' Close the workbook without saving changes
     SAPwb.Close SaveChanges:=False
+    
+    tbl1.DataBodyRange.Cells(1, 1).Formula = "=VLOOKUP([@Ordem],Tabela2,2,FALSE)"
+    tbl1.DataBodyRange.Cells(1, 2).Formula = "=VLOOKUP([@Ordem],Tabela2,3,FALSE)"
+    
+    ' Loop each cell, test for Date, then format
+    For Each cell In tbl1.DataBodyRange.Columns(9).Cells
+        If cell.Value <= Date Then
+            With cell
+                .Interior.Color = RGB(255, 199, 206)   ' light red fill
+                .Font.Color = RGB(156, 0, 6)           ' dark red font
+            End With
+        End If
+    Next cell
     
     'Application.Wait (Now + TimeValue("00:00:03"))
     
